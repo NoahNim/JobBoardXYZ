@@ -13,7 +13,6 @@ const Login = (props) => {
       <Input></Input>
       <FormLabel htmlFor="paswword">Password</FormLabel>
       <Input></Input>
-      {authCtx}
     </FormControl>
   );
 };
