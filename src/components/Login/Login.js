@@ -1,14 +1,11 @@
 import { FormControl, FormLabel, Input, Button } from "@chakra-ui/react";
 import React, { useContext, useState } from "react";
-import { auth } from "../../firebase";
 import AuthContext from "../../store/auth-context";
 
 const Login = () => {
   const [emailInput, setEmailInput] = useState("");
   const [passwordInput, setPasswordInput] = useState("");
   const authCtx = useContext(AuthContext);
-
-  console.log(authCtx.onLogin);
 
   const emailInputChangeHandler = (event) => {
     setEmailInput(event.target.value);
@@ -23,8 +20,7 @@ const Login = () => {
   const loginHandler = async (event) => {
     event.preventDefault();
     try {
-      await authCtx?.login(emailInput.value, passwordInput.value);
-      console.log("IN LOGIN " + authCtx.user);
+      await authCtx?.login(emailInput, passwordInput);
     } catch (err) {
       console.log(err.message);
     }
@@ -37,14 +33,14 @@ const Login = () => {
         <Input
           id="email"
           type="email"
-          value={emailInput.value}
+          value={emailInput}
           onChange={emailInputChangeHandler}
         ></Input>
         <FormLabel htmlFor="paswword">Password</FormLabel>
         <Input
           id="password"
           type="password"
-          value={passwordInput.value}
+          value={passwordInput}
           onChange={passwordInputChangeHandler}
         ></Input>
         <Button type="submit">Login In</Button>

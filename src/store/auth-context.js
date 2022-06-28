@@ -9,14 +9,13 @@ import {
 const AuthContext = createContext({});
 
 export const AuthContextProvider = (props) => {
-  const [theUser, settheUser] = useState({});
+  const [theUser, setTheUser] = useState({});
 
   const login = async (email, password) => {
-    return signInWithEmailAndPassword(auth, email, password)
+    await signInWithEmailAndPassword(auth, email, password)
       .then((userCred) => {
         const currUser = userCred.user;
-        console.log("IN AUTH " + currUser);
-        settheUser(currUser);
+        setTheUser(currUser);
       })
       .catch((error) => {
         const errorCode = error.code;
@@ -27,16 +26,16 @@ export const AuthContextProvider = (props) => {
 
   const logout = async () => {
     return signOut(auth).then(() => {
-      settheUser({});
+      setTheUser({});
     });
   };
 
   return (
     <AuthContext.Provider
       value={{
-        theUser,
-        login: login(),
-        logout: logout(),
+        user: theUser,
+        login: login,
+        logout: logout,
       }}
     >
       {props.children}
