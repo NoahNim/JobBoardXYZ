@@ -5,14 +5,9 @@ import Login from "./components/Login/Login";
 import UserHome from "./components/UserHome/UserHome";
 
 function App() {
-  const ctx = useContext(AuthContext);
-
-  return (
-    <Box>
-      {!ctx.isLogginIn && <Login />}
-      {ctx.isLogginIn && <UserHome />}
-    </Box>
-  );
+  const userCtx = useContext(AuthContext);
+  console.log(userCtx.theUser);
+  return <Box>{userCtx.theUser ? <UserHome /> : <Login />}</Box>;
 }
 
 export default App;

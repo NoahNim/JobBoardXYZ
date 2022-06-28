@@ -1,38 +1,42 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext, createContext } from "react";
+import { auth } from "../firebase";
+import {
+  signInWithEmailAndPassword,
+  signOut,
+  // createUserWithEmailAndPassword,
+} from "firebase/auth";
 
-const AuthContext = React.createContext({
-  isLogginIn: false,
-  onLogout: () => {},
-  onLogin: (email, password) => {},
-});
+const AuthContext = createContext({});
 
 export const AuthContextProvider = (props) => {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [theUser, settheUser] = useState({});
 
-  useEffect(() => {
-    const storeLoggedInUserInfo = localStorage.getItem("isLoggedIn");
-
-    if (storeLoggedInUserInfo === "1") {
-      setIsLoggedIn(true);
-    }
-  }, []);
-
-  const logoutHandler = () => {
-    localStorage.removeItem("isLoggedIn");
-    setIsLoggedIn(false);
+  const login = async (email, password) => {
+    return signInWithEmailAndPassword(auth, email, password)
+      .then((userCred) => {
+        const currUser = userCred.user;
+        console.log("IN AUTH " + currUser);
+        settheUser(currUser);
+      })
+      .catch((error) => {
+        const errorCode = error.code;
+        const errorMessage = error.message;
+        console.log(`${errorCode} ${errorMessage}`);
+      });
   };
 
-  const loginHandler = () => {
-    localStorage.setItem("isLoggedIn", "1");
-    setIsLoggedIn(true);
+  const logout = async () => {
+    return signOut(auth).then(() => {
+      settheUser({});
+    });
   };
 
   return (
     <AuthContext.Provider
       value={{
-        isLoggedIn: isLoggedIn,
-        onLogout: logoutHandler,
-        onLogin: loginHandler,
+        theUser,
+        login: login(),
+        logout: logout(),
       }}
     >
       {props.children}

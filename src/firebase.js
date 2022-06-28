@@ -1,10 +1,11 @@
 // Import the functions you need from the SDKs you need
 
 import { initializeApp } from "firebase/app";
-import { getFirestore, collection, getDocs } from "firebase/firestore/lite";
-
+import { getFirestore, collection, addDoc } from "firebase/firestore/lite";
+import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
 import { getAnalytics } from "firebase/analytics";
 import { dblClick } from "@testing-library/user-event/dist/click";
+import { type } from "@testing-library/user-event/dist/type";
 
 // TODO: Add SDKs for Firebase products that you want to use
 
@@ -33,8 +34,29 @@ const firebaseConfig = {
 // Initialize Firebase
 
 const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
 const db = getFirestore(app);
 
-const analytics = getAnalytics(app);
+const registerWithEmailAndPassword = async (name, email, password, type) => {
+  try {
+    const res = await createUserWithEmailAndPassword(
+      auth,
+      name,
+      email,
+      password,
+      type
+    );
+    const user = res.user;
+    await addDoc(collection(db.Users, "Users"), {
+      uid: user.uid,
+      name,
+      authProvider: "local",
+      type,
+      email,
+    });
+  } catch (err) {
+    console.log(err);
+  }
+};
 
-export default db;
+export { auth, db };
